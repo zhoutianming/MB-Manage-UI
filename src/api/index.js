@@ -9,10 +9,11 @@ export function login (query) {
   })
 }
 // 获取所有留言内容
-export function getAllMessage () {
+export function getAllMessage (query) {
   return request({
     url: '/message/getAllMessage',
-    method: 'post'
+    method: 'post',
+    data: query
   })
 }
 

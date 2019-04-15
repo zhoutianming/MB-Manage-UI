@@ -115,7 +115,8 @@ export default {
     },
     // 获取留言数据
     getData() {
-      getAllMessage().then((response) => {
+      var messageVO = {}
+      getAllMessage(messageVO).then((response) => {
         this.messageData = response.data.data
       })
     },
