@@ -21,8 +21,9 @@
         :data="reviewData.slice((currentPage-1)*pageSize,currentPage*pageSize)" 
         border 
         class="table" 
-        @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+        @selection-change="handleSelectionChange"
+        :row-key="getRowKeys">
+        <el-table-column type="selection" width="55" align="center" reserve-selection="true"></el-table-column>
         <el-table-column prop="userName" label="评论者" width="150"></el-table-column>
         <el-table-column prop="reviewedContent" label="被评论的留言" width="400"></el-table-column>
         <el-table-column prop="reviewContent" label="评论内容" width="415"></el-table-column>

@@ -17,6 +17,7 @@
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item  command="loginout">退出登录</el-dropdown-item>
+              <el-dropdown-item  command="editPassword">修改密码</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -30,12 +31,32 @@
         </transition>
       </div>
     </div>
+    <el-dialog
+      title="修改密码"
+      :visible.sync="dialogVisible"
+      :show-close="false"
+      width="23%"
+      center>
+      <div style="">
+        <el-input style="width:100%" type="password" placeholder="请输入旧密码" v-model="oldPassword" clearable></el-input>
+        <br><br>
+        <el-input style="width:100%" type="password" placeholder="请输入新密码"  v-model="newPassword1" clearable></el-input>
+        <br><br>
+        <el-input style="width:100%" type="password" placeholder="请再次输入新密码"  v-model="newPassword2" clearable></el-input>
+        <hr style="margin-top:20px;width:99%;margin-bottom:-27px;">
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" style="width:45%">取 消</el-button>
+        <el-button type="primary" @click="editPassword" style="background:#2886ff;width:45%">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import vSidebar from './Sidebar.vue'
 import bus from './bus'
+import {editPassword} from '@/api'
 
 export default {
   components:{
@@ -47,14 +68,14 @@ export default {
       collapse: false,
       fullscreen: false,
       name: 'linxin',
-      message: 2
+      message: 2,
+      dialogVisible: false,
+      oldPassword: '',
+      newPassword1: '',
+      newPassword2: ''
     }
   },
   computed:{
-    // username(){
-    //   let username = localStorage.getItem('ms_username');
-    //   return username ? username : this.name;
-    // },
     user () {
       return this.$store.getters.getUserData
     }
@@ -76,8 +97,60 @@ export default {
     // 用户名下拉菜单选择事件
     handleCommand(command) {
       if(command == 'loginout'){
-        localStorage.removeItem('ms_username')
-        this.$router.push('/login');
+        localStorage.clear()
+        this.$router.push('/login')
+      }
+      if(command == 'editPassword'){
+        this.dialogVisible = true
+      }
+    },
+    // 修改密码
+    editPassword () {
+      if (this.oldPassword === '') {
+        this.$message({
+          message: '请输入旧密码',
+          type: 'error',
+          center: true
+        })
+      } else if (this.newPassword1 === '') {
+        this.$message({
+          message: '请输入新密码',
+          type: 'error',
+          center: true
+        })
+      } else if (this.oldPassword === this.newPassword1) {
+        this.$message({
+          message: '输入的新旧密码相同!',
+          type: 'warn',
+          center: true
+        })
+      } else if (this.newPassword1 !== this.newPassword2) {
+        this.$message({
+          message: '请核对两次新密码',
+          type: 'erorr',
+          center: true
+        })
+      } else {
+        var userVO = {}
+        userVO.name = this.user.userName
+        userVO.oldPassword = this.oldPassword
+        userVO.newPassword = this.newPassword1
+        editPassword(userVO).then(response => {
+          if (response.data.code === 2) {
+            this.$message({
+              message: '输入的旧密码错误',
+              type: 'error',
+              center: true
+            })
+          } else if (response.data.code === 1) {
+            this.$message({
+              message: '修改成功',
+              type: 'success',
+              center: true
+            })
+            this.dialogVisible = false
+          }
+        })
       }
     },
     // 侧边栏折叠

@@ -10,6 +10,7 @@ import adminLogin from '@/components/page/Login'
 Vue.use(Router);
 
 export default new Router({
+  model: 'history',
   routes: [
     {
       path: '/',

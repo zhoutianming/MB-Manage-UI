@@ -8,6 +8,16 @@ export function login (query) {
     data: query
   })
 }
+
+// 修改密码
+export function editPassword (query) {
+  return request({
+    url: '/user/editPassword',
+    method: 'post',
+    data: query
+  })
+}
+
 // 获取所有留言内容
 export function getAllMessage (query) {
   return request({
